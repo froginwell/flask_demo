@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  app:
+    image: "froginwell/flask_demo:1.0.0"
+    ports:
+      - "6001:6001/tcp"
+      - "6002:6002/tcp"
+      - "6003:6003/tcp"
+      - "6004:6004/tcp"
+      - "6005:6005/tcp"
+      - "6006:6006/tcp"
+      - "6007:6007/tcp"
+      - "6008:6008/tcp"
+      - "6009:6009/tcp"
+      - "6010:6010/tcp"
+    networks:
+      - "default_overlay"
+    volumes:
+      - "/etc/hostname:/etc/hostname"
+    logging:
+      driver: "syslog"
+      options:
+        syslog-address: "tcp://127.0.0.1:3456"
+        syslog-facility: "local0"
+        syslog-format: "rfc5424"
+        tag: "flask_demo"
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: "any"
+        delay: "30s"
+        window: "10s"
+      rollback_config:
+        parallelism: 1
+        delay: "30s"
+        monitor: "10s"
+        order: "start-first"
+      update_config:
+        parallelism: 1
+        delay: "30s"
+        failure_action: "rollback"
+        monitor: "10s"
+        order: "start-first"
+
+networks:
+  default_overlay:
+    external: true
